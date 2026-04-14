@@ -1,10 +1,14 @@
+import os
 from typing import AsyncGenerator, Generator
 
 from fastapi.testclient import TestClient
 import pytest
-from main import app
-from routers.post import comment_table, post_table
 from httpx import AsyncClient, ASGITransport
+
+
+os.environ["ENV_STATE"] = "test"
+from database import database  # noqa: E402
+from main import app  # noqa: E402
 
 
 @pytest.fixture(scope="session")
@@ -19,12 +23,14 @@ def client() -> Generator:
 
 @pytest.fixture(autouse=True)
 async def db() -> AsyncGenerator:
-    post_table.clear()
-    comment_table.clear()
+    await database.connect()
     yield
+    await database.disconnect()
 
 
 @pytest.fixture()
-async def async_client(client) -> AsyncGenerator:
-    async with AsyncClient(transport=ASGITransport(app=app), base_url=client.base_url) as ac:
+async def async_client() -> AsyncGenerator:
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://testserver"
+    ) as ac:
         yield ac
