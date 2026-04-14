@@ -24,6 +24,11 @@ async def create_comment(body: str, post_id: int, async_client: AsyncClient) -> 
     return response.json()
 
 
+@pytest.fixture()
+async def created_comment(async_client: AsyncClient, created_post: dict):
+    return await create_comment("Test comment", created_post["id"], async_client)
+
+
 @pytest.mark.anyio
 async def test_create_post(async_client: AsyncClient):
     body = "Test Post"
@@ -47,3 +52,59 @@ async def test_get_all_posts(async_client: AsyncClient, created_post: dict):
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [created_post]
+
+
+@pytest.mark.anyio
+async def test_create_comment(async_client: AsyncClient, created_post: dict):
+    body = "Test comment"
+    response = await async_client.post(
+        "/comment",
+        json={"body": body, "post_id": created_post["id"]},
+    )
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert {
+        "id": 0,
+        "body": body,
+        "post_id": created_post["id"],
+    }.items() <= response.json().items()
+
+
+@pytest.mark.anyio
+async def test_get_comments_on_post(
+    async_client: AsyncClient, created_post: dict, created_comment: dict
+):
+    response = await async_client.get(f"/post/{created_post['id']}/comment")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == [created_comment]
+
+
+@pytest.mark.anyio
+async def test_get_comments_on_post_empty(
+    async_client: AsyncClient, created_post: dict
+):
+    response = await async_client.get(f"/post/{created_post['id']}/comment")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == []
+
+
+@pytest.mark.anyio
+async def test_get_post_with_comments(
+    async_client: AsyncClient, created_post: dict, created_comment: dict
+):
+    response = await async_client.get(f"/post/{created_post['id']}")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {
+        "post": created_post,
+        "comments": [created_comment],
+    }
+
+
+@pytest.mark.anyio
+async def test_get_missing_post_with_comments(async_client: AsyncClient):
+    response = await async_client.get(f"/post/2")
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
