@@ -13,21 +13,18 @@ class GlobalConfig(BaseConfig):
 
 
 class DevConfig(GlobalConfig):
-    class Config:
-        env_prefix: str = "DEV_"
+    model_config = SettingsConfigDict(env_prefix="DEV_")
 
 
 class ProdConfig(GlobalConfig):
-    class Config:
-        env_prefix: str = "PROD_"
+    model_config = SettingsConfigDict(env_prefix="PROD_")
 
 
 class TestConfig(GlobalConfig):
     DATABASE_URL: str = "sqlite:///test.db"
     DB_FORCE_ROLL_BACK: bool = True
 
-    class Config:
-        env_prefix: str = "TEST_"
+    model_config = SettingsConfigDict(env_prefix="TEST_")
 
 
 def get_config(env_state: str):
@@ -40,4 +37,4 @@ def get_config(env_state: str):
     return configs[env_state]()
 
 
-config = get_config(BaseConfig().ENV_STATE or "dev")
+config = get_config(BaseConfig().ENV_STATE)
