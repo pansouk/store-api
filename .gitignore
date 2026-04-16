@@ -11,3 +11,4 @@ wheels/
 .env
 data.db
 test.db
+storeapi.log

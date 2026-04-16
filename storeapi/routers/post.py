@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 from storeapi.database import (
     database,
@@ -12,6 +13,9 @@ from storeapi.models.post import (
     UserPostIn,
     UserPostWithComments,
 )
+
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -35,6 +39,9 @@ async def create_post(post: UserPostIn):
 @router.get("/post", response_model=list[UserPost])
 async def get_all_posts():
     query = postTable.select()
+
+    logger.debug(query)
+
     return await database.fetch_all(query)
 
 

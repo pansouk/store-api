@@ -16,7 +16,7 @@ def configure_logging() -> None:
                 "file": {
                     "class": "logging.Formatter",
                     "datefmt": "%Y-%m-%dT%H:%M:%S",
-                    "format": "%(asctime)s.%(msecs)03dZ | %(levelname)-8s | %(name)s | %(lineo)d - %{message}s",
+                    "format": "%(asctime)s.%(msecs)03dZ | %(levelname)-8s | %(name)s | %(lineno)d - %(message)s",
                 },
             },
             "handlers": {
