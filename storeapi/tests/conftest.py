@@ -8,7 +8,7 @@ from httpx import AsyncClient, ASGITransport
 
 os.environ["ENV_STATE"] = "test"
 from storeapi.database import database  # noqa: E402
-from main import app  # noqa: E402
+from storeapi.main import app  # noqa: E402
 
 
 @pytest.fixture(scope="session")
