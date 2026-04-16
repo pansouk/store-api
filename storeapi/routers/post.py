@@ -1,7 +1,17 @@
 from typing import Any
-from database import database, post_table as postTable, comment_table as commentTable
+from storeapi.database import (
+    database,
+    post_table as postTable,
+    comment_table as commentTable,
+)
 from fastapi import APIRouter, HTTPException, status
-from models.post import Comment, CommentIn, UserPost, UserPostIn, UserPostWithComments
+from storeapi.models.post import (
+    Comment,
+    CommentIn,
+    UserPost,
+    UserPostIn,
+    UserPostWithComments,
+)
 
 router = APIRouter()
 

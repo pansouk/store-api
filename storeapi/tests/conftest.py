@@ -7,7 +7,7 @@ from httpx import AsyncClient, ASGITransport
 
 
 os.environ["ENV_STATE"] = "test"
-from database import database  # noqa: E402
+from storeapi.database import database  # noqa: E402
 from main import app  # noqa: E402
 
 
