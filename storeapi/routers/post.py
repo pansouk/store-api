@@ -52,7 +52,6 @@ async def get_all_posts():
 async def create_comment(comment: CommentIn):
     post = await find_post(comment.post_id)
     if not post:
-        logger.error(f"Post with id {comment.post_id} not found")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
         )
@@ -75,10 +74,9 @@ async def get_comments_on_post(post_id: int):
 
 @router.get("/post/{post_id}", response_model=UserPostWithComments)
 async def get_post_with_comments(post_id: int):
-    logger.info(f"Gettiing post with id: {post_id} and its comment(s).")
+    logger.info(f"Getting post with id: {post_id} and its comment(s).")
     post = await find_post(post_id)
     if not post:
-        logger.error(f"Post with id: {post_id} not found")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Post not found"
         )
